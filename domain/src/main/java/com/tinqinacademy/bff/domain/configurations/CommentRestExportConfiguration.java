@@ -1,8 +1,7 @@
-package com.tinqinacademy.bff.domain.configuration;
+package com.tinqinacademy.bff.domain.configurations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.comment.restexport.CommentRestClient;
-import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
@@ -11,10 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RestExportConfiguration {
-    @Value(value = "${hotel.service.url}")
-    private String hotelUrl;
-
+public class CommentRestExportConfiguration {
     @Value(value = "${comment.service.url}")
     private String commentUrl;
 
@@ -26,15 +22,5 @@ public class RestExportConfiguration {
                 .encoder(new JacksonEncoder(objectMapper))
                 .decoder(new JacksonDecoder(objectMapper))
                 .target(CommentRestClient.class, commentUrl);
-    }
-
-    @Bean(name = "HotelRestClient")
-    public HotelRestClient hotelRestClient() {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        return Feign.builder()
-                .encoder(new JacksonEncoder(objectMapper))
-                .decoder(new JacksonDecoder(objectMapper))
-                .target(HotelRestClient.class, hotelUrl);
     }
 }

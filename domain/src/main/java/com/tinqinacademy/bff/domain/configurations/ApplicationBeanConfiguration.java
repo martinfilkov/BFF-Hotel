@@ -1,4 +1,4 @@
-package com.tinqinacademy.bff.domain.configuration;
+package com.tinqinacademy.bff.domain.configurations;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
