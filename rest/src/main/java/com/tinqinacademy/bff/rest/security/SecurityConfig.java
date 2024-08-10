@@ -32,10 +32,10 @@ public class SecurityConfig {
                                         "/webjars/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/auth/change-password").authenticated()
-                                .requestMatchers("/api/auth/promote").hasRole(RoleType.ADMIN.toString())
-                                .requestMatchers("/api/auth/demote").hasRole(RoleType.ADMIN.toString())
-                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/test/authenticated").authenticated()
+                                .requestMatchers("/api/test/promote").hasRole(RoleType.ADMIN.toString())
+                                .requestMatchers("/api/test/demote").hasRole(RoleType.ADMIN.toString())
+                                .requestMatchers("/api/test/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 //Това означава, че дори да е бил authenticate-нат user-а, ние пак ще го проверим

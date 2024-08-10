@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Boolean isTokenValid = authenticationRestClient.validateUser(validateInput).getValidity();
                 if (isTokenValid) {
 
-                    CustomToken authToken = new CustomToken(user);
+                    CustomAuthToken authToken = new CustomAuthToken(user);
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
