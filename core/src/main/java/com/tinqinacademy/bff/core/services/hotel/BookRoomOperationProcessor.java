@@ -6,9 +6,9 @@ import com.tinqinacademy.bff.api.operations.hotel.bookroom.BookRoomBFFOperation;
 import com.tinqinacademy.bff.api.operations.hotel.bookroom.BookRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
 import com.tinqinacademy.bff.persistence.JWTContext;
 import com.tinqinacademy.hotel.api.operations.hotel.bookroom.BookRoomInput;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -22,15 +22,16 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class BookRoomOperationProcessor extends BaseOperationProcessor implements BookRoomBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
     private final JWTContext jwtContext;
 
     public BookRoomOperationProcessor(ConversionService conversionService,
-                                         Validator validator,
-                                         ErrorMapper errorMapper,
-                                         HotelRestExportConfiguration hotelRestExportConfiguration, JWTContext jwtContext) {
+                                      Validator validator,
+                                      ErrorMapper errorMapper,
+                                      HotelRestClient hotelRestClient,
+                                      JWTContext jwtContext) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
         this.jwtContext = jwtContext;
     }
 
@@ -49,7 +50,7 @@ public class BookRoomOperationProcessor extends BaseOperationProcessor implement
                             .userId(userId)
                             .build();
 
-                    hotelRestExportConfiguration.bookRoom(input.getRoomId(), request);
+                    hotelRestClient.bookRoom(input.getRoomId(), request);
 
                     BookRoomBFFOutput output = BookRoomBFFOutput.builder().build();
                     log.info("End bookRoom output: {}", output);

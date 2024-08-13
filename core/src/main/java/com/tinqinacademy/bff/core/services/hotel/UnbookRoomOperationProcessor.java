@@ -6,7 +6,7 @@ import com.tinqinacademy.bff.api.operations.hotel.unbookroom.UnbookRoomBFFOperat
 import com.tinqinacademy.bff.api.operations.hotel.unbookroom.UnbookRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -20,10 +20,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class UnbookRoomOperationProcessor extends BaseOperationProcessor implements UnbookRoomBFFOperation {
-    private HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
-    public UnbookRoomOperationProcessor(ConversionService conversionService, Validator validator, ErrorMapper errorMapper) {
+    public UnbookRoomOperationProcessor(ConversionService conversionService,
+                                        Validator validator,
+                                        ErrorMapper errorMapper,
+                                        HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class UnbookRoomOperationProcessor extends BaseOperationProcessor impleme
         return Try.of(() -> {
                     log.info("Start unbookRoom with input: {}", input);
 
-                    hotelRestExportConfiguration.unbookRoom(input.getBookingId());
+                    hotelRestClient.unbookRoom(input.getBookingId());
 
                     UnbookRoomBFFOutput output = UnbookRoomBFFOutput.builder().build();
                     log.info("End unbookRoom with output: {}", output);

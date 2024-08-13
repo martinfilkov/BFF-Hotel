@@ -1,15 +1,14 @@
 package com.tinqinacademy.bff.core.services.hotel;
 
 import com.tinqinacademy.bff.api.operations.base.Errors;
-import com.tinqinacademy.bff.api.operations.hotel.unbookroom.UnbookRoomBFFOutput;
 import com.tinqinacademy.bff.api.operations.hotel.updateroom.UpdateRoomBFFInput;
 import com.tinqinacademy.bff.api.operations.hotel.updateroom.UpdateRoomBFFOperation;
 import com.tinqinacademy.bff.api.operations.hotel.updateroom.UpdateRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
 import com.tinqinacademy.hotel.api.operations.system.updateroom.UpdateRoomInput;
 import com.tinqinacademy.hotel.api.operations.system.updateroom.UpdateRoomOutput;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -23,14 +22,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class UpdateRoomOperationProcessor extends BaseOperationProcessor implements UpdateRoomBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public UpdateRoomOperationProcessor(ConversionService conversionService,
                                         Validator validator,
                                         ErrorMapper errorMapper,
-                                        HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                        HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -44,7 +43,7 @@ public class UpdateRoomOperationProcessor extends BaseOperationProcessor impleme
                     log.info("Start updateRoom with input: {}", input);
 
                     UpdateRoomInput requestInput = conversionService.convert(input, UpdateRoomInput.class);
-                    UpdateRoomOutput requestOutput = hotelRestExportConfiguration.update(input.getRoomId(), requestInput);
+                    UpdateRoomOutput requestOutput = hotelRestClient.update(input.getRoomId(), requestInput);
 
                     UpdateRoomBFFOutput output = conversionService.convert(requestOutput, UpdateRoomBFFOutput.class);
                     log.info("End updateRoom with output: {}", output);

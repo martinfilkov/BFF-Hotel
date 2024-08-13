@@ -209,7 +209,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
-    @PatchMapping(path = HotelMappings.PARTIAL_UPDATE_ROOM, consumes = "application/json-patch+json")
+    @PatchMapping(path = HotelMappings.PARTIAL_UPDATE_ROOM)
     public ResponseEntity<?> partialUpdate(@PathVariable("roomId") String id,
                                            @RequestBody PartialUpdateRoomBFFInput request) {
         PartialUpdateRoomBFFInput input = request.toBuilder()

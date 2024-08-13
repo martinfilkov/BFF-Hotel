@@ -6,9 +6,8 @@ import com.tinqinacademy.bff.api.operations.hotel.inforregister.InfoRegisterBFFI
 import com.tinqinacademy.bff.api.operations.hotel.inforregister.InfoRegisterBFFOutputList;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
-import com.tinqinacademy.hotel.api.operations.system.inforregister.InfoRegisterOutput;
 import com.tinqinacademy.hotel.api.operations.system.inforregister.InfoRegisterOutputList;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -22,14 +21,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class GetRegisterInfoOperationProcessor extends BaseOperationProcessor implements GetRegisterInfoBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public GetRegisterInfoOperationProcessor(ConversionService conversionService,
                                              Validator validator,
                                              ErrorMapper errorMapper,
-                                             HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                             HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -41,7 +40,7 @@ public class GetRegisterInfoOperationProcessor extends BaseOperationProcessor im
     private Either<Errors, InfoRegisterBFFOutputList> getRegisterInfo(InfoRegisterBFFInput input) {
         return Try.of(() -> {
                     log.info("Start getRegisterInfo with input: {}", input);
-                    InfoRegisterOutputList requestOutput = hotelRestExportConfiguration.infoRegistry(
+                    InfoRegisterOutputList requestOutput = hotelRestClient.infoRegistry(
                             input.getStartDate(),
                             input.getEndDate(),
                             input.getRoomNumber(),

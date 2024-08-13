@@ -6,8 +6,8 @@ import com.tinqinacademy.bff.api.operations.hotel.getroomids.GetRoomIdsBFFOperat
 import com.tinqinacademy.bff.api.operations.hotel.getroomids.GetRoomIdsBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
 import com.tinqinacademy.hotel.api.operations.hotel.getroomids.GetRoomIdsOutput;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -21,14 +21,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class GetRoomIdsOperationProcessor extends BaseOperationProcessor implements GetRoomIdsBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public GetRoomIdsOperationProcessor(ConversionService conversionService,
                                         Validator validator,
                                         ErrorMapper errorMapper,
-                                        HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                        HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GetRoomIdsOperationProcessor extends BaseOperationProcessor impleme
         return Try.of(() -> {
                     log.info("Start getRoomIds with input: {}", input);
 
-                    GetRoomIdsOutput requestOutput = hotelRestExportConfiguration.getIds(input.getStartDate(),
+                    GetRoomIdsOutput requestOutput = hotelRestClient.getIds(input.getStartDate(),
                             input.getEndDate(),
                             input.getBedSize(),
                             input.getBathroomType());

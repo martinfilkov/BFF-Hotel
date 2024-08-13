@@ -6,9 +6,9 @@ import com.tinqinacademy.bff.api.operations.hotel.createroom.CreateRoomBFFOperat
 import com.tinqinacademy.bff.api.operations.hotel.createroom.CreateRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
 import com.tinqinacademy.hotel.api.operations.system.createroom.CreateRoomInput;
 import com.tinqinacademy.hotel.api.operations.system.createroom.CreateRoomOutput;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -22,14 +22,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class CreateRoomOperationProcessor extends BaseOperationProcessor implements CreateRoomBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public CreateRoomOperationProcessor(ConversionService conversionService,
                                         Validator validator,
                                         ErrorMapper errorMapper,
-                                        HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                        HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CreateRoomOperationProcessor extends BaseOperationProcessor impleme
                     log.info("Start createRoom with input: {}", input);
 
                     CreateRoomInput requestInput = conversionService.convert(input, CreateRoomInput.class);
-                    CreateRoomOutput requestOutput = hotelRestExportConfiguration.create(requestInput);
+                    CreateRoomOutput requestOutput = hotelRestClient.create(requestInput);
 
                     CreateRoomBFFOutput output = conversionService.convert(requestOutput, CreateRoomBFFOutput.class);
                     log.info("End createRoom with output: {}", output);

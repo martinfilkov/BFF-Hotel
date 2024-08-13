@@ -6,8 +6,8 @@ import com.tinqinacademy.bff.api.operations.hotel.registervisitor.RegisterVisito
 import com.tinqinacademy.bff.api.operations.hotel.registervisitor.RegisterVisitorBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
 import com.tinqinacademy.hotel.api.operations.system.registervisitor.RegisterVisitorInputList;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -21,14 +21,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class RegisterVisitorOperationProcessor extends BaseOperationProcessor implements RegisterVisitorBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public RegisterVisitorOperationProcessor(ConversionService conversionService,
                                              Validator validator,
                                              ErrorMapper errorMapper,
-                                             HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                             HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class RegisterVisitorOperationProcessor extends BaseOperationProcessor im
                     log.info("Start registerVisitor with input: {}", inputList);
                     RegisterVisitorInputList requestInput = conversionService.convert(inputList, RegisterVisitorInputList.class);
 
-                    hotelRestExportConfiguration.register(requestInput);
+                    hotelRestClient.register(requestInput);
 
                     RegisterVisitorBFFOutput output = RegisterVisitorBFFOutput.builder().build();
                     log.info("End registerVisitor with output: {}", output);

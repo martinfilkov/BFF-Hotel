@@ -6,8 +6,8 @@ import com.tinqinacademy.bff.api.operations.hotel.roombyid.RoomByIdBFFOperation;
 import com.tinqinacademy.bff.api.operations.hotel.roombyid.RoomByIdBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
 import com.tinqinacademy.hotel.api.operations.hotel.roombyid.RoomByIdOutput;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -21,14 +21,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class RoomByIdOperationProcessor extends BaseOperationProcessor implements RoomByIdBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public RoomByIdOperationProcessor(ConversionService conversionService,
                                       Validator validator,
                                       ErrorMapper errorMapper,
-                                      HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                      HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RoomByIdOperationProcessor extends BaseOperationProcessor implement
         return Try.of(() -> {
                     log.info("Start roomById with input: {}", input);
 
-                    RoomByIdOutput requestOutput = hotelRestExportConfiguration.getRoom(input.getId());
+                    RoomByIdOutput requestOutput = hotelRestClient.getRoom(input.getId());
 
                     RoomByIdBFFOutput output = conversionService.convert(requestOutput, RoomByIdBFFOutput.class);
                     log.info("End roomById with output: {}", output);

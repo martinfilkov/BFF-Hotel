@@ -6,7 +6,7 @@ import com.tinqinacademy.bff.api.operations.hotel.deleteroom.DeleteRoomBFFOperat
 import com.tinqinacademy.bff.api.operations.hotel.deleteroom.DeleteRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.domain.configurations.HotelRestExportConfiguration;
+import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -20,14 +20,14 @@ import static io.vavr.API.*;
 @Slf4j
 @Service
 public class DeleteRoomOperationProcessor extends BaseOperationProcessor implements DeleteRoomBFFOperation {
-    private final HotelRestExportConfiguration hotelRestExportConfiguration;
+    private final HotelRestClient hotelRestClient;
 
     public DeleteRoomOperationProcessor(ConversionService conversionService,
                                         Validator validator,
                                         ErrorMapper errorMapper,
-                                        HotelRestExportConfiguration hotelRestExportConfiguration) {
+                                        HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
-        this.hotelRestExportConfiguration = hotelRestExportConfiguration;
+        this.hotelRestClient = hotelRestClient;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DeleteRoomOperationProcessor extends BaseOperationProcessor impleme
         return Try.of(() -> {
                     log.info("Start deleteRoom with input: {}", input);
 
-                    hotelRestExportConfiguration.delete(input.getId());
+                    hotelRestClient.delete(input.getId());
 
                     DeleteRoomBFFOutput output = DeleteRoomBFFOutput.builder().build();
                     log.info("End deleteRoom with output: {}", output);
