@@ -1,6 +1,8 @@
 package com.tinqinacademy.bff.rest.security;
 
 import com.tinqinacademy.authentication.persistence.models.RoleType;
+import com.tinqinacademy.comment.api.operations.base.CommentMappings;
+import com.tinqinacademy.hotel.api.operations.base.HotelMappings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,10 +34,19 @@ public class SecurityConfig {
                                         "/webjars/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/test/authenticated").authenticated()
-                                .requestMatchers("/api/test/promote").hasRole(RoleType.ADMIN.toString())
-                                .requestMatchers("/api/test/demote").hasRole(RoleType.ADMIN.toString())
-                                .requestMatchers("/api/test/**").permitAll()
+                                .requestMatchers(
+                                        HotelMappings.GET_IDS,
+                                        HotelMappings.GET_ROOM,
+                                        CommentMappings.GET_COMMENTS).permitAll()
+                                .requestMatchers(
+                                        HotelMappings.REGISTER_VISITOR,
+                                        HotelMappings.INFO_REGISTRY,
+                                        HotelMappings.CREATE_ROOM,
+                                        HotelMappings.UPDATE_ROOM,
+                                        HotelMappings.PARTIAL_UPDATE_ROOM,
+                                        HotelMappings.DELETE_ROOM,
+                                        CommentMappings.ADMIN_UPDATE_COMMENT,
+                                        CommentMappings.DELETE_COMMENT).hasRole(RoleType.ADMIN.toString())
                                 .anyRequest().authenticated()
                 )
                 //Това означава, че дори да е бил authenticate-нат user-а, ние пак ще го проверим

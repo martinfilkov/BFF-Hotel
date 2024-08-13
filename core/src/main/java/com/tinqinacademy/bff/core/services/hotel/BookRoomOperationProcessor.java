@@ -25,7 +25,7 @@ public class BookRoomOperationProcessor extends BaseOperationProcessor implement
     private final HotelRestExportConfiguration hotelRestExportConfiguration;
     private final JWTContext jwtContext;
 
-    protected BookRoomOperationProcessor(ConversionService conversionService,
+    public BookRoomOperationProcessor(ConversionService conversionService,
                                          Validator validator,
                                          ErrorMapper errorMapper,
                                          HotelRestExportConfiguration hotelRestExportConfiguration, JWTContext jwtContext) {
