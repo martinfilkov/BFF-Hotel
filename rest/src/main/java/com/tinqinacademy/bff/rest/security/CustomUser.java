@@ -14,17 +14,11 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-public class CustomUser implements UserDetails {
+public class CustomUser {
     private String username;
     private String role;
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role));
-    }
-
-    @Override
-    public String getPassword() {
-        return "";
     }
 }
