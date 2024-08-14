@@ -1,22 +1,20 @@
 package com.tinqinacademy.bff.rest.security;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.authentication.api.operations.operations.validate.ValidateUserInput;
 import com.tinqinacademy.authentication.restexport.AuthenticationRestClient;
-import com.tinqinacademy.bff.api.operations.exceptions.IllegalTokenException;
+import com.tinqinacademy.bff.persistence.JWTContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -25,15 +23,15 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final HandlerExceptionResolver handlerExceptionResolver;
     private final AuthenticationRestClient authenticationRestClient;
     private final ObjectMapper objectMapper;
+    private final JWTContext jwtContext;
 
     @Override
     protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
@@ -47,38 +45,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication == null) {
-                String[] parts = jwt.split("\\.");
-
-                if (parts.length != 3) {
-                    throw new IllegalTokenException("Invalid JWT token");
-                }
-
-                String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
-
-                Map<String, String> payloadMap = objectMapper.readValue(payload, Map.class);
-
-                CustomUser user = CustomUser.builder()
-                        .username(payloadMap.get("user_id"))
-                        .role(payloadMap.get("role"))
-                        .build();
-
                 ValidateUserInput validateInput = ValidateUserInput.builder()
-                        .username(user.getUsername())
                         .token(jwt)
                         .build();
 
-                Boolean isTokenValid = authenticationRestClient.validateUser(validateInput).getValidity();
+                Boolean isTokenValid = authenticationRestClient.validateToken(validateInput).getValidity();
                 if (isTokenValid) {
+                    Map<String, String> payloadMap = getPayload(jwt);
+
+                    CustomUser user = CustomUser.builder()
+                            .username(payloadMap.get("user_id"))
+                            .role(payloadMap.get("role"))
+                            .build();
 
                     CustomAuthToken authToken = new CustomAuthToken(user);
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    jwtContext.setUserId(user.getUsername());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
+    }
+
+    private Map<String, String> getPayload(String jwt) throws JsonProcessingException {
+        String[] parts = jwt.split("\\.");
+
+        String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
+
+        return objectMapper.readValue(payload, Map.class);
     }
 }

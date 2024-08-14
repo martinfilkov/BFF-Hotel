@@ -1,8 +1,11 @@
 package com.tinqinacademy.bff.core;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.bff.api.operations.base.OperationInput;
 import com.tinqinacademy.bff.api.operations.exceptions.ErrorResponse;
 import com.tinqinacademy.bff.api.operations.exceptions.ErrorWrapper;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
@@ -33,5 +36,22 @@ public class ErrorMapper {
                 .errors(responses)
                 .code(statusCode.value())
                 .build();
+    }
+
+    public ErrorWrapper handleFeignException(FeignException ex) {
+        try {
+            String errorBody = ex.contentUTF8();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode errorNode = objectMapper.readTree(errorBody);
+            return objectMapper.treeToValue(errorNode, ErrorWrapper.class);
+        } catch (Exception e) {
+            return ErrorWrapper
+                    .builder()
+                    .errors(List.of(ErrorResponse.builder()
+                            .message("An error occurred while processing your request")
+                            .build()))
+                    .code(ex.status())
+                    .build();
+        }
     }
 }
