@@ -6,7 +6,6 @@ import com.tinqinacademy.bff.api.operations.hotel.bookroom.BookRoomBFFOperation;
 import com.tinqinacademy.bff.api.operations.hotel.bookroom.BookRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.persistence.JWTContext;
 import com.tinqinacademy.hotel.api.operations.hotel.bookroom.BookRoomInput;
 import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import feign.FeignException;
@@ -25,16 +24,13 @@ import static io.vavr.Predicates.instanceOf;
 @Service
 public class BookRoomOperationProcessor extends BaseOperationProcessor implements BookRoomBFFOperation {
     private final HotelRestClient hotelRestClient;
-    private final JWTContext jwtContext;
 
     public BookRoomOperationProcessor(ConversionService conversionService,
                                       Validator validator,
                                       ErrorMapper errorMapper,
-                                      HotelRestClient hotelRestClient,
-                                      JWTContext jwtContext) {
+                                      HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
         this.hotelRestClient = hotelRestClient;
-        this.jwtContext = jwtContext;
     }
 
     @Override
@@ -46,11 +42,8 @@ public class BookRoomOperationProcessor extends BaseOperationProcessor implement
     private Either<Errors, BookRoomBFFOutput> bookRoom(BookRoomBFFInput input) {
         return Try.of(() -> {
                     log.info("Start bookRoom input: {}", input);
-                    String userId = jwtContext.getUserId();
 
-                    BookRoomInput request = conversionService.convert(input, BookRoomInput.BookRoomInputBuilder.class)
-                            .userId(userId)
-                            .build();
+                    BookRoomInput request = conversionService.convert(input, BookRoomInput.class);
 
                     hotelRestClient.bookRoom(input.getRoomId(), request);
 

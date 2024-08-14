@@ -1,4 +1,4 @@
-package com.tinqinacademy.bff.core.services.comment;
+package com.tinqinacademy.bff.core.converters.comment;
 
 import com.tinqinacademy.bff.api.operations.comment.partialupdatecomment.ContentUpdateCommentBFFOutput;
 import com.tinqinacademy.comment.api.operations.hotel.partialupdatecomment.ContentUpdateCommentOutput;

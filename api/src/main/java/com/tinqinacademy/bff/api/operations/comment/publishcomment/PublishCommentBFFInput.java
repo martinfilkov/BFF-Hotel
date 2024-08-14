@@ -18,4 +18,7 @@ public class PublishCommentBFFInput implements OperationInput {
 
     @NotBlank(message = "Content cannot be blank")
     private String content;
+
+    @JsonIgnore
+    private String userId;
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.authentication.api.operations.operations.validate.ValidateUserInput;
 import com.tinqinacademy.authentication.restexport.AuthenticationRestClient;
-import com.tinqinacademy.bff.persistence.JWTContext;
+import com.tinqinacademy.bff.rest.context.JWTContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

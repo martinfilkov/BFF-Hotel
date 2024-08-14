@@ -4,15 +4,11 @@ import com.tinqinacademy.bff.api.operations.base.Errors;
 import com.tinqinacademy.bff.api.operations.comment.publishcomment.PublishCommentBFFInput;
 import com.tinqinacademy.bff.api.operations.comment.publishcomment.PublishCommentBFFOperation;
 import com.tinqinacademy.bff.api.operations.comment.publishcomment.PublishCommentBFFOutput;
-import com.tinqinacademy.bff.api.operations.hotel.createroom.CreateRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.persistence.JWTContext;
 import com.tinqinacademy.comment.api.operations.hotel.publishcomment.PublishCommentInput;
 import com.tinqinacademy.comment.api.operations.hotel.publishcomment.PublishCommentOutput;
 import com.tinqinacademy.comment.restexport.CommentRestClient;
-import com.tinqinacademy.hotel.api.operations.system.createroom.CreateRoomInput;
-import com.tinqinacademy.hotel.api.operations.system.createroom.CreateRoomOutput;
 import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import feign.FeignException;
 import io.vavr.control.Either;
@@ -31,17 +27,14 @@ import static io.vavr.Predicates.instanceOf;
 public class PublishCommentOperationProcessor extends BaseOperationProcessor implements PublishCommentBFFOperation {
     private final CommentRestClient commentRestClient;
     private final HotelRestClient hotelRestClient;
-    private final JWTContext jwtContext;
 
     public PublishCommentOperationProcessor(ConversionService conversionService,
                                             Validator validator,
                                             ErrorMapper errorMapper,
-                                            CommentRestClient commentRestClient, HotelRestClient hotelRestClient,
-                                            JWTContext jwtContext) {
+                                            CommentRestClient commentRestClient, HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
         this.commentRestClient = commentRestClient;
         this.hotelRestClient = hotelRestClient;
-        this.jwtContext = jwtContext;
     }
 
     @Override
@@ -55,9 +48,7 @@ public class PublishCommentOperationProcessor extends BaseOperationProcessor imp
                     log.info("Start publishComment with input: {}", input);
                     hotelRestClient.getRoom(input.getRoomId());
 
-                    PublishCommentInput requestInput = conversionService.convert(input, PublishCommentInput.PublishCommentInputBuilder.class)
-                            .userId(jwtContext.getUserId())
-                            .build();
+                    PublishCommentInput requestInput = conversionService.convert(input, PublishCommentInput.class);
 
                     PublishCommentOutput requestOutput = commentRestClient.publishComment(input.getRoomId(), requestInput);
 

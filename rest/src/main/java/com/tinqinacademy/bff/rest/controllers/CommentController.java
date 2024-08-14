@@ -17,6 +17,7 @@ import com.tinqinacademy.bff.api.operations.comment.publishcomment.PublishCommen
 import com.tinqinacademy.bff.api.operations.comment.updatecomment.AdminUpdateCommentBFFInput;
 import com.tinqinacademy.bff.api.operations.comment.updatecomment.AdminUpdateCommentBFFOperation;
 import com.tinqinacademy.bff.api.operations.comment.updatecomment.AdminUpdateCommentBFFOutput;
+import com.tinqinacademy.bff.rest.context.JWTContext;
 import com.tinqinacademy.comment.api.operations.base.CommentMappings;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -34,6 +35,7 @@ public class CommentController extends BaseController{
     private final ContentUpdateCommentBFFOperation contentUpdateCommentOperation;
     private final AdminUpdateCommentBFFOperation adminUpdateCommentOperation;
     private final DeleteCommentBFFOperation deleteCommentOperation;
+    private final JWTContext jwtContext;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully returned comments"),
@@ -59,6 +61,7 @@ public class CommentController extends BaseController{
             @RequestBody PublishCommentBFFInput request) {
         PublishCommentBFFInput input = request.toBuilder()
                 .roomId(id)
+                .userId(jwtContext.getUserId())
                 .build();
 
         Either<Errors, PublishCommentBFFOutput> output = publishCommentOperation.process(input);
@@ -71,13 +74,14 @@ public class CommentController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Comment not found")
     })
-    @PutMapping(CommentMappings.CONTENT_UPDATE_COMMENT)
+    @PatchMapping(CommentMappings.CONTENT_UPDATE_COMMENT)
     public ResponseEntity<?> contentUpdate(
             @PathVariable("commentId") String id,
             @RequestBody ContentUpdateCommentBFFInput request
     ) {
         ContentUpdateCommentBFFInput input = request.toBuilder()
                 .commentId(id)
+                .userId(jwtContext.getUserId())
                 .build();
 
         Either<Errors, ContentUpdateCommentBFFOutput> output = contentUpdateCommentOperation.process(input);
@@ -90,13 +94,14 @@ public class CommentController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Comment not found")
     })
-    @PatchMapping(CommentMappings.ADMIN_UPDATE_COMMENT)
+    @PutMapping(CommentMappings.ADMIN_UPDATE_COMMENT)
     public ResponseEntity<?> adminUpdateComment(
             @PathVariable("commentId") String id,
             @RequestBody AdminUpdateCommentBFFInput request
     ) {
         AdminUpdateCommentBFFInput input = request.toBuilder()
                 .commentId(id)
+                .userId(jwtContext.getUserId())
                 .build();
 
         Either<Errors, AdminUpdateCommentBFFOutput> output = adminUpdateCommentOperation.process(input);

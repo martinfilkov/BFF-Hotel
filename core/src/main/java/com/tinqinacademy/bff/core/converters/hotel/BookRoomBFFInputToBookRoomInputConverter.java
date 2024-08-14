@@ -8,18 +8,20 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class BookRoomBFFInputToBookRoomInputConverter implements Converter<BookRoomBFFInput, BookRoomInput.BookRoomInputBuilder> {
+public class BookRoomBFFInputToBookRoomInputConverter implements Converter<BookRoomBFFInput, BookRoomInput> {
 
     @Override
-    public BookRoomInput.BookRoomInputBuilder convert(BookRoomBFFInput input) {
+    public BookRoomInput convert(BookRoomBFFInput input) {
         log.info("Start converting from BookRoomBFFInput to BookRoomInput");
 
-        BookRoomInput.BookRoomInputBuilder output = BookRoomInput.builder()
+        BookRoomInput output = BookRoomInput.builder()
                 .firstName(input.getFirstName())
                 .lastName(input.getLastName())
                 .phone(input.getPhone())
                 .startDate(input.getStartDate())
-                .endDate(input.getEndDate());
+                .endDate(input.getEndDate())
+                .userId(input.getUserId())
+                .build();
 
         log.info("End converting from BookRoomBFFInput to BookRoomInput");
         return output;

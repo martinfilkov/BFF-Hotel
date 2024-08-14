@@ -4,11 +4,8 @@ import com.tinqinacademy.bff.api.operations.base.Errors;
 import com.tinqinacademy.bff.api.operations.comment.getcomments.GetCommentsBFFInput;
 import com.tinqinacademy.bff.api.operations.comment.getcomments.GetCommentsBFFOperation;
 import com.tinqinacademy.bff.api.operations.comment.getcomments.GetCommentsBFFOutputList;
-import com.tinqinacademy.bff.api.operations.hotel.deleteroom.DeleteRoomBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.persistence.JWTContext;
-import com.tinqinacademy.comment.api.operations.hotel.getcomments.GetCommentsOutput;
 import com.tinqinacademy.comment.api.operations.hotel.getcomments.GetCommentsOutputList;
 import com.tinqinacademy.comment.restexport.CommentRestClient;
 import com.tinqinacademy.hotel.restexport.HotelRestClient;
@@ -34,7 +31,7 @@ public class GetCommentsOperationProcessor extends BaseOperationProcessor implem
                                          Validator validator,
                                          ErrorMapper errorMapper,
                                          CommentRestClient commentRestClient,
-                                         JWTContext jwtContext, HotelRestClient hotelRestClient) {
+                                         HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
         this.commentRestClient = commentRestClient;
         this.hotelRestClient = hotelRestClient;

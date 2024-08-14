@@ -6,11 +6,9 @@ import com.tinqinacademy.bff.api.operations.comment.updatecomment.AdminUpdateCom
 import com.tinqinacademy.bff.api.operations.comment.updatecomment.AdminUpdateCommentBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.persistence.JWTContext;
 import com.tinqinacademy.comment.api.operations.system.updatecomment.AdminUpdateCommentInput;
 import com.tinqinacademy.comment.api.operations.system.updatecomment.AdminUpdateCommentOutput;
 import com.tinqinacademy.comment.restexport.CommentRestClient;
-import com.tinqinacademy.hotel.api.operations.hotel.roombyid.RoomByIdOutput;
 import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import feign.FeignException;
 import io.vavr.control.Either;
@@ -29,13 +27,15 @@ import static io.vavr.Predicates.instanceOf;
 public class AdminUpdateCommentOperationProcessor extends BaseOperationProcessor implements AdminUpdateCommentBFFOperation {
     private final CommentRestClient commentRestClient;
     private final HotelRestClient hotelRestClient;
-    private final JWTContext jwtContext;
 
-    public AdminUpdateCommentOperationProcessor(ConversionService conversionService, Validator validator, ErrorMapper errorMapper, CommentRestClient commentRestClient, HotelRestClient hotelRestClient, JWTContext jwtContext) {
+    public AdminUpdateCommentOperationProcessor(ConversionService conversionService,
+                                                Validator validator,
+                                                ErrorMapper errorMapper,
+                                                CommentRestClient commentRestClient,
+                                                HotelRestClient hotelRestClient) {
         super(conversionService, validator, errorMapper);
         this.commentRestClient = commentRestClient;
         this.hotelRestClient = hotelRestClient;
-        this.jwtContext = jwtContext;
     }
 
     @Override
@@ -47,11 +47,9 @@ public class AdminUpdateCommentOperationProcessor extends BaseOperationProcessor
     private Either<Errors, AdminUpdateCommentBFFOutput> adminUpdateComment(AdminUpdateCommentBFFInput input) {
         return Try.of(() -> {
                     log.info("Start adminUpdateComment with input: {}", input);
-                    hotelRestClient.getRoom(input.getRoomId());
+                    checkRoomIfProvided(input);
 
-                    AdminUpdateCommentInput requestInput = conversionService.convert(input, AdminUpdateCommentInput.AdminUpdateCommentInputBuilder.class)
-                            .userId(jwtContext.getUserId())
-                            .build();
+                    AdminUpdateCommentInput requestInput = conversionService.convert(input, AdminUpdateCommentInput.class);
                     AdminUpdateCommentOutput requestOutput = commentRestClient.adminUpdateComment(input.getCommentId(), requestInput);
 
                     AdminUpdateCommentBFFOutput output = conversionService.convert(requestOutput, AdminUpdateCommentBFFOutput.class);
@@ -64,5 +62,11 @@ public class AdminUpdateCommentOperationProcessor extends BaseOperationProcessor
                         Case($(instanceOf(FeignException.class)), errorMapper::handleFeignException),
                         Case($(), ex -> errorMapper.handleError(ex, HttpStatus.BAD_REQUEST))
                 ));
+    }
+
+    private void checkRoomIfProvided(AdminUpdateCommentBFFInput input) {
+        if (input.getRoomId() != null) {
+            hotelRestClient.getRoom(input.getRoomId());
+        }
     }
 }
