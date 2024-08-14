@@ -9,6 +9,7 @@ import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
 import com.tinqinacademy.hotel.api.operations.system.createroom.CreateRoomInput;
 import com.tinqinacademy.hotel.api.operations.system.createroom.CreateRoomOutput;
 import com.tinqinacademy.hotel.restexport.HotelRestClient;
+import feign.FeignException;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import static io.vavr.API.*;
+import static io.vavr.Predicates.instanceOf;
 
 @Slf4j
 @Service
@@ -51,6 +53,8 @@ public class CreateRoomOperationProcessor extends BaseOperationProcessor impleme
                 })
                 .toEither()
                 .mapLeft(throwable -> Match(throwable).of(
-                        Case($(), ex -> errorMapper.handleError(ex, HttpStatus.BAD_REQUEST))));
+                        Case($(instanceOf(FeignException.class)), errorMapper::handleFeignException),
+                        Case($(), ex -> errorMapper.handleError(ex, HttpStatus.BAD_REQUEST))
+                ));
     }
 }

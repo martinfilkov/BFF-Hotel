@@ -39,6 +39,7 @@ import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -132,6 +133,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "201", description = "Registered a visitor"),
             @ApiResponse(responseCode = "403", description = "User not authorized")
     })
+//    @PreAuthorize("hasRole('admin')")
     @PostMapping(HotelMappings.REGISTER_VISITOR)
     public ResponseEntity<?> register(@RequestBody RegisterVisitorBFFInputList input) {
         Either<Errors, RegisterVisitorBFFOutput> output = registerVisitorOperation.process(input);
@@ -144,6 +146,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Visitor not found")
     })
+//    @PreAuthorize("hasRole('admin')")
     @GetMapping(HotelMappings.INFO_REGISTRY)
     public ResponseEntity<?> infoRegistry(
             @RequestParam(value = "startDate") LocalDate startDate,
@@ -180,6 +183,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "201", description = "Successfully created a room"),
             @ApiResponse(responseCode = "403", description = "User not authorized")
     })
+//    @PreAuthorize("hasRole('admin')")
     @PostMapping(HotelMappings.CREATE_ROOM)
     public ResponseEntity<?> create(@RequestBody CreateRoomBFFInput input) {
         Either<Errors, CreateRoomBFFOutput> output = createRoomOperation.process(input);
@@ -192,6 +196,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
+//    @PreAuthorize("hasRole('admin')")
     @PutMapping(HotelMappings.UPDATE_ROOM)
     public ResponseEntity<?> update(@PathVariable("roomId") String id,
                                     @RequestBody UpdateRoomBFFInput request) {
@@ -209,7 +214,8 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
-    @PatchMapping(path = HotelMappings.PARTIAL_UPDATE_ROOM)
+//    @PreAuthorize("hasRole('admin')")
+    @PatchMapping(path = HotelMappings.PARTIAL_UPDATE_ROOM, consumes = {"application/json-patch+json", "application/json"})
     public ResponseEntity<?> partialUpdate(@PathVariable("roomId") String id,
                                            @RequestBody PartialUpdateRoomBFFInput request) {
         PartialUpdateRoomBFFInput input = request.toBuilder()
@@ -226,6 +232,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "403", description = "User not authorized"),
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
+//    @PreAuthorize("hasRole('admin')")
     @DeleteMapping(HotelMappings.DELETE_ROOM)
     public ResponseEntity<?> delete(@PathVariable("roomId") String id) {
         DeleteRoomBFFInput input = DeleteRoomBFFInput.builder()
