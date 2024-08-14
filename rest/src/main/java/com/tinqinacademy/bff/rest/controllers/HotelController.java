@@ -32,6 +32,7 @@ import com.tinqinacademy.bff.api.operations.hotel.unbookroom.UnbookRoomBFFOutput
 import com.tinqinacademy.bff.api.operations.hotel.updateroom.UpdateRoomBFFInput;
 import com.tinqinacademy.bff.api.operations.hotel.updateroom.UpdateRoomBFFOperation;
 import com.tinqinacademy.bff.api.operations.hotel.updateroom.UpdateRoomBFFOutput;
+import com.tinqinacademy.bff.rest.context.JWTContext;
 import com.tinqinacademy.hotel.api.operations.base.HotelMappings;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -57,6 +58,7 @@ public class HotelController extends BaseController {
     private final RegisterVisitorBFFOperation registerVisitorOperation;
     private final UpdateRoomBFFOperation updateRoomOperation;
     private final GetRegisterInfoBFFOperation getRegisterInfoOperation;
+    private final JWTContext jwtContext;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully returned ids"),
@@ -105,6 +107,7 @@ public class HotelController extends BaseController {
                                       @RequestBody BookRoomBFFInput request) {
         BookRoomBFFInput input = request.toBuilder()
                 .roomId(roomId)
+                .userId(jwtContext.getUserId())
                 .build();
 
         Either<Errors, BookRoomBFFOutput> output = bookRoomOperation.process(input);

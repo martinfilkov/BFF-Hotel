@@ -8,13 +8,15 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PublishCommentBFFInputToPublishCommentInputConverter implements Converter<PublishCommentBFFInput, PublishCommentInput.PublishCommentInputBuilder> {
+public class PublishCommentBFFInputToPublishCommentInputConverter implements Converter<PublishCommentBFFInput, PublishCommentInput> {
     @Override
-    public PublishCommentInput.PublishCommentInputBuilder convert(PublishCommentBFFInput input) {
+    public PublishCommentInput convert(PublishCommentBFFInput input) {
         log.info("Start converting from PublishCommentBFFInput to PublishCommentInput with input: {}", input);
 
-        PublishCommentInput.PublishCommentInputBuilder output = PublishCommentInput.builder()
-                .content(input.getContent());
+        PublishCommentInput output = PublishCommentInput.builder()
+                .content(input.getContent())
+                .userId(input.getUserId())
+                .build();
 
         log.info("End converting from PublishCommentBFFInput to PublishCommentInput with output: {}", output);
         return output;

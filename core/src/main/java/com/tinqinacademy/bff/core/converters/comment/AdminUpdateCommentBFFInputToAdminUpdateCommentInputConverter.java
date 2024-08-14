@@ -8,15 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class AdminUpdateCommentBFFInputToAdminUpdateCommentInputConverter implements Converter<AdminUpdateCommentBFFInput, AdminUpdateCommentInput.AdminUpdateCommentInputBuilder> {
+public class AdminUpdateCommentBFFInputToAdminUpdateCommentInputConverter implements Converter<AdminUpdateCommentBFFInput, AdminUpdateCommentInput> {
     @Override
-    public AdminUpdateCommentInput.AdminUpdateCommentInputBuilder convert(AdminUpdateCommentBFFInput input) {
+    public AdminUpdateCommentInput convert(AdminUpdateCommentBFFInput input) {
         log.info("Start converting from AdminUpdateCommentBFFInput to AdminUpdateCommentInput with input: {}", input);
 
-        AdminUpdateCommentInput.AdminUpdateCommentInputBuilder output = AdminUpdateCommentInput.builder()
+        AdminUpdateCommentInput output = AdminUpdateCommentInput.builder()
                 .commentId(input.getCommentId())
                 .content(input.getContent())
-                .roomId(input.getRoomId());
+                .roomId(input.getRoomId())
+                .userId(input.getUserId())
+                .build();
 
         log.info("End converting from AdminUpdateCommentBFFInput to AdminUpdateCommentInput with output: {}", output);
         return output;

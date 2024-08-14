@@ -1,14 +1,11 @@
 package com.tinqinacademy.bff.core.services.comment;
 
 import com.tinqinacademy.bff.api.operations.base.Errors;
-import com.tinqinacademy.bff.api.operations.comment.getcomments.GetCommentsBFFOutputList;
 import com.tinqinacademy.bff.api.operations.comment.partialupdatecomment.ContentUpdateCommentBFFInput;
 import com.tinqinacademy.bff.api.operations.comment.partialupdatecomment.ContentUpdateCommentBFFOperation;
 import com.tinqinacademy.bff.api.operations.comment.partialupdatecomment.ContentUpdateCommentBFFOutput;
 import com.tinqinacademy.bff.core.ErrorMapper;
 import com.tinqinacademy.bff.core.services.BaseOperationProcessor;
-import com.tinqinacademy.bff.persistence.JWTContext;
-import com.tinqinacademy.comment.api.operations.hotel.getcomments.GetCommentsOutputList;
 import com.tinqinacademy.comment.api.operations.hotel.partialupdatecomment.ContentUpdateCommentInput;
 import com.tinqinacademy.comment.api.operations.hotel.partialupdatecomment.ContentUpdateCommentOutput;
 import com.tinqinacademy.comment.restexport.CommentRestClient;
@@ -21,8 +18,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
@@ -30,16 +25,13 @@ import static io.vavr.Predicates.instanceOf;
 @Service
 public class ContentUpdateCommentOperationProcessor extends BaseOperationProcessor implements ContentUpdateCommentBFFOperation {
     private final CommentRestClient commentRestClient;
-    private final JWTContext jwtContext;
 
     public ContentUpdateCommentOperationProcessor(ConversionService conversionService,
                                                   Validator validator,
                                                   ErrorMapper errorMapper,
-                                                  CommentRestClient commentRestClient,
-                                                  JWTContext jwtContext) {
+                                                  CommentRestClient commentRestClient) {
         super(conversionService, validator, errorMapper);
         this.commentRestClient = commentRestClient;
-        this.jwtContext = jwtContext;
     }
 
     @Override
@@ -52,9 +44,7 @@ public class ContentUpdateCommentOperationProcessor extends BaseOperationProcess
         return Try.of(() -> {
                     log.info("Start contentUpdateComment with input: {}", input);
 
-                    ContentUpdateCommentInput requestInput = conversionService.convert(input, ContentUpdateCommentInput.ContentUpdateCommentInputBuilder.class)
-                            .userId(jwtContext.getUserId())
-                            .build();
+                    ContentUpdateCommentInput requestInput = conversionService.convert(input, ContentUpdateCommentInput.class);
 
                     ContentUpdateCommentOutput requestOutput = commentRestClient.contentUpdate(input.getCommentId(), requestInput);
 

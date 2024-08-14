@@ -34,4 +34,7 @@ public class BookRoomBFFInput implements OperationInput {
 
     @Size(min = 10, max = 10, message = "Phone must be 10 characters")
     private String phone;
+
+    @JsonIgnore
+    private String userId;
 }

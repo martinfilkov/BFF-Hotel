@@ -1,4 +1,4 @@
-package com.tinqinacademy.bff.persistence;
+package com.tinqinacademy.bff.rest.context;
 
 import lombok.Getter;
 import lombok.Setter;
