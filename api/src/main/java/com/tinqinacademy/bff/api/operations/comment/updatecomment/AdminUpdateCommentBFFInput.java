@@ -15,8 +15,6 @@ public class AdminUpdateCommentBFFInput implements OperationInput {
     @NotBlank(message = "commentId cannot be blank")
     @JsonIgnore
     private String commentId;
-    private String roomNumber;
-    private String firstName;
-    private String lastName;
+    private String roomId;
     private String content;
 }

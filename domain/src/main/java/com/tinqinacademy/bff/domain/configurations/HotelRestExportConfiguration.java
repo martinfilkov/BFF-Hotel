@@ -5,6 +5,7 @@ import com.tinqinacademy.hotel.restexport.HotelRestClient;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import feign.okhttp.OkHttpClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ public class HotelRestExportConfiguration {
         return Feign.builder()
                 .encoder(new JacksonEncoder(objectMapper))
                 .decoder(new JacksonDecoder(objectMapper))
+                .client(new OkHttpClient())
                 .target(com.tinqinacademy.hotel.restexport.HotelRestClient.class, hotelUrl);
     }
 }

@@ -14,8 +14,7 @@ import java.util.UUID;
 @ToString
 public class GetCommentsBFFOutput implements OperationOutput {
     private String id;
-    private String firstName;
-    private String lastName;
+    private String userId;
     private String content;
     private LocalDateTime publishDate;
     private LocalDateTime lastEditedDate;

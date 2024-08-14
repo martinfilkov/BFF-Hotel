@@ -16,15 +16,6 @@ public class PublishCommentBFFInput implements OperationInput {
     @JsonIgnore
     private String roomId;
 
-    @NotBlank(message = "First name cannot be blank")
-    private String firstName;
-
-    @NotBlank(message = "Last name cannot be blank")
-    private String lastName;
-
     @NotBlank(message = "Content cannot be blank")
     private String content;
-
-    @NotBlank(message = "User id cannot be blank")
-    private String userId;
 }

@@ -4,10 +4,10 @@ import com.tinqinacademy.bff.api.operations.comment.getcomments.GetCommentsBFFOu
 import com.tinqinacademy.comment.api.operations.hotel.getcomments.GetCommentsOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Service
+@Component
 public class GetCommentsOutputToGetCommentsBFFOutputConverter implements Converter<GetCommentsOutput, GetCommentsBFFOutput> {
     @Override
     public GetCommentsBFFOutput convert(GetCommentsOutput input) {
@@ -15,10 +15,11 @@ public class GetCommentsOutputToGetCommentsBFFOutputConverter implements Convert
 
         GetCommentsBFFOutput output = GetCommentsBFFOutput.builder()
                 .id(input.getId())
+                .userId(input.getUserId())
                 .content(input.getContent())
-                .firstName(input.getFirstName())
-                .lastName(input.getLastName())
                 .publishDate(input.getPublishDate())
+                .lastEditedBy(input.getLastEditedBy())
+                .lastEditedDate(input.getLastEditedDate())
                 .build();
 
         log.info("End converting from GetCommentsOutput to GetCommentsBFFOutput with output: {}", output);
