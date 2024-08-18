@@ -1,6 +1,5 @@
 package com.tinqinacademy.bff.rest.security;
 
-import com.tinqinacademy.authentication.persistence.models.RoleType;
 import com.tinqinacademy.comment.api.operations.base.CommentMappings;
 import com.tinqinacademy.hotel.api.operations.base.HotelMappings;
 import lombok.RequiredArgsConstructor;
@@ -51,32 +50,32 @@ public class SecurityConfig {
                                         HttpMethod.POST,
                                         HotelMappings.REGISTER_VISITOR,
                                         HotelMappings.CREATE_ROOM
-                                ).hasRole(RoleType.ADMIN.toString())
+                                ).hasRole("admin")
 
                                 //Get
                                 .requestMatchers(
                                         HttpMethod.GET,
                                         HotelMappings.INFO_REGISTRY
-                                ).hasRole(RoleType.ADMIN.toString())
+                                ).hasRole("admin")
 
                                 //Put
                                 .requestMatchers(
                                         HttpMethod.PUT,
                                         HotelMappings.UPDATE_ROOM
-                                ).hasRole(RoleType.ADMIN.toString())
+                                ).hasRole("admin")
 
                                 //Patch
                                 .requestMatchers(
                                         HttpMethod.PATCH,
                                         HotelMappings.PARTIAL_UPDATE_ROOM,
                                         CommentMappings.ADMIN_UPDATE_COMMENT
-                                ).hasRole(RoleType.ADMIN.toString())
+                                ).hasRole("admin")
 
                                 //Delete
                                 .requestMatchers(
                                         HttpMethod.DELETE,
                                         HotelMappings.DELETE_ROOM,
-                                        CommentMappings.DELETE_COMMENT).hasRole(RoleType.ADMIN.toString())
+                                        CommentMappings.DELETE_COMMENT).hasRole("admin")
                                 .anyRequest().authenticated()
                 )
                 //Това означава, че дори да е бил authenticate-нат user-а, ние пак ще го проверим
